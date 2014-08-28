@@ -1,0 +1,837 @@
+worker_processes  auto;
+error_log logs/error.log;
+worker_rlimit_nofile 200000;
+
+
+events {
+    worker_connections 4048;
+		use epoll;
+}
+
+
+http {
+	lua_package_path "/path/to/lua-resty-cookie/lib/?.lua;;"; 
+	geoip_country  /home/ashish/work/GeoIP.dat; # the country IP database
+	geoip_city     /home/ashish/work/GeoLiteCity.dat; # the city IP database
+init_worker_by_lua '	
+							ffi = require "ffi"
+               ffi.cdef[[
+           					int fact (void);
+                  ]]
+        func = ffi.load("/home/ashish/work/test.so")
+';
+
+server {
+	listen 9080;
+        keepalive_timeout  65;
+	keepalive_requests  2147483647;
+	#real_ip_header    X-Real-IP;
+	set_real_ip_from  0.0.0.0/0;
+
+	location / {
+            default_type text/html;
+        		echo "hello world";
+				}
+	
+    	location /AdServer {
+	default_type text/html;
+	set $first "Hello ";
+        echo "<h1>${first} From AdServer World</h1>"; 
+	echo "<h2> Basic URI Parser</h2>";
+	echo "</br> uri  $uri </br> <b>request uri is $request_uri </b>";	
+	echo "</br></br></br>";
+	echo "</br>THIS IS A $request_method REQUEST </br>";
+	echo "</br>operId: $arg_operId";
+	echo "</br>pubId: $arg_pubId";
+	echo "</br>siteId: $arg_siteId";
+	echo "</br>adId: $arg_adId";
+	echo "</br>kadheight: $arg_kadheight";
+	echo "</br>kadwidth: $arg_kadwidth";
+	echo "</br>udidtype: $arg_udidtype";
+	echo "</br>ktextColor: $arg_ktextColor";
+	echo "</br>klinkColor: $arg_klinkColor";
+	echo "</br>kltstamp : $arg_kltstamp";
+	echo "</br>timezone: $arg_timezone";
+	echo "</br>screenResolution: $arg_screenResolution";
+	echo "</br>adPosition : $arg_adPosition";
+	echo "</br>adVisibility: $arg_adVisibility";
+	echo "</br>noEnc : $arg_noEnc";
+	echo "</br>frameName: $arg_frameName";
+	echo "</br>pmUniAdId: $arg_pmUniAdId";
+	echo "</br>ranreq: $arg_ranreq";
+	echo "</br>pageUR: $arg_pageURL";
+	echo "</br>kadgdr: $arg_kadgdr";
+	echo "</br>state: $arg_state";
+	echo "</br>city: $arg_city";
+	echo "</br>dma: $arg_dma";
+	echo "</br>zip: $arg_zip";
+	echo "</br>yob: $arg_yob";
+	echo "</br>nettype: $arg_nettype";
+	echo "</br>carrier: $arg_carrier";
+	echo "</br>ethn: $arg_ethn";
+	echo "</br>inc: $arg_inc";
+	echo "</br>country: $arg_country";
+	echo "</br>keywords: $arg_keywords";
+	echo "</br>kadpageurl: $arg_kadpageurl";
+
+	}
+
+	location /foo {
+        	set $a hello;
+        	echo_exec /bar;
+    }
+
+    	location /bar {
+        	echo "a = [$a]";
+    }
+
+
+	location /one {
+		proxy_set_header Connection "keep-alive";
+		proxy_pass http://172.16.4.7:9090/ ;
+		proxy_buffering    off;
+		proxy_buffer_size  128k;
+		proxy_buffers 100  128k;
+		proxy_redirect off;
+	}
+
+	location /two {
+  proxy_set_header Connection "keep-alive";	
+	proxy_pass http://172.16.4.7:9090/ ;
+	proxy_buffering    off;
+	proxy_buffer_size  128k;
+	proxy_buffers 100  128k;
+	proxy_redirect off;
+	}
+
+location /three {
+  proxy_set_header Connection "keep-alive";
+	proxy_pass http://172.16.4.7:9090/ ;
+	proxy_buffering    off;
+	proxy_buffer_size  128k;
+	proxy_buffers 100  128k;
+	proxy_redirect off;
+  }
+
+location /four {
+	proxy_set_header Connection "keep-alive";
+	proxy_pass http://172.16.4.41:9090/ ;
+	proxy_buffering    off;
+	proxy_buffer_size  128k;
+	proxy_buffers 100  128k;
+	proxy_redirect off;
+  }
+
+location /five {
+	  proxy_set_header Connection "keep-alive";
+		proxy_pass http://172.16.4.41:9090/ ;
+		proxy_buffering    off;
+		proxy_buffer_size  128k;
+		proxy_buffers 100  128k;
+		proxy_redirect off;
+  }
+location /six {
+		proxy_set_header Connection "keep-alive";
+		proxy_pass http://172.16.4.13:9090/ ;
+		proxy_buffering    off;
+		proxy_buffer_size  128k;
+		proxy_buffers 100  128k;
+		proxy_redirect off;
+  }
+
+
+
+
+
+
+
+location /seven {
+    proxy_set_header Connection "keep-alive";
+    proxy_pass http://172.16.4.7:9090/ ;
+		proxy_buffering    off;
+		proxy_buffer_size  128k;
+		proxy_buffers 100  128k;
+		proxy_redirect off;
+  }
+
+  location /eight {
+  proxy_set_header Connection "keep-alive"; 
+  proxy_pass http://172.16.4.7:9090/ ;
+	proxy_buffering    off;
+	proxy_buffer_size  128k;
+	proxy_buffers 100  128k;
+	proxy_redirect off;
+  }
+
+location /nine {
+  proxy_set_header Connection "keep-alive";
+  proxy_pass http://172.16.4.7:9090/ ;
+	proxy_buffering    off;
+	proxy_buffer_size  128k;
+	proxy_buffers 100  128k;
+	proxy_redirect off;
+  }
+
+location /ten {
+  proxy_set_header Connection "keep-alive";
+  proxy_pass http://172.16.4.7:9090/ ;
+	proxy_buffering    off;
+	proxy_buffer_size  128k;
+	proxy_buffers 100  128k;
+	proxy_redirect off;
+  }
+
+location /eleven {
+    proxy_set_header Connection "keep-alive";
+    proxy_pass http://172.16.4.42:8080/ ;
+		proxy_buffering    off;
+		proxy_buffer_size  128k;
+		proxy_buffers 100  128k;
+  }
+location /twelve {
+    proxy_set_header Connection "keep-alive";
+    proxy_pass http://172.16.4.42:8080/ ;
+  }
+
+
+
+
+location /thirteen {
+    proxy_set_header Connection "keep-alive";
+    proxy_pass http://172.16.4.42:8080/ ;
+  } 
+  
+  location /fourteen {
+  proxy_set_header Connection "keep-alive";
+  proxy_pass http://172.16.4.42:8080/ ;
+  }
+
+location /fifteen {
+  proxy_set_header Connection "keep-alive";
+  proxy_pass http://172.16.4.42:8080/ ;
+  }
+
+location /sixteen {
+  proxy_set_header Connection "keep-alive";
+  proxy_pass http://172.16.4.13:9090/ ;
+  }
+
+location /seventeen {
+    proxy_set_header Connection "keep-alive";
+    proxy_pass http://172.16.4.13:9090/ ;
+  } 
+location /eighteen {
+    proxy_set_header Connection "keep-alive";
+    proxy_pass http://172.16.4.41:9090/ ;
+  }
+
+location /nineteen {
+    proxy_set_header Connection "keep-alive";
+    proxy_pass http://172.16.4.41:9090/ ;
+  } 
+location /twenty {
+    proxy_set_header Connection "keep-alive";
+    proxy_pass http://172.16.4.41:9090/ ;
+  }
+
+
+	location /try {
+	content_by_lua '
+				function multi () 
+				local sock = ngx.socket.tcp()
+				sock:settimeout(1000)
+        local ok, err = sock:connect("172.16.4.7", 80)
+        if not ok then
+            	 ngx.log(ngx.CRIT,"connect failed")
+							ngx.status = 503 
+            	ngx.say("service unavailable")
+            	ngx.exit(503)
+            	ngx.exit(ngx.NGX_ERROR);
+        end
+				local reqline = string.format("GET / HTTP/1.1\\r\\nHOST:localhost\\r\\n\\r\\n")
+				sock:settimeout(1000)
+				local bytes, err = sock:send(reqline)
+				sock:settimeout(1000)
+				local line, err, partial = sock:receiveuntil("\\r\\n")
+				if not line then
+							 ngx.log(ngx.CRIT,"receive failed")
+							ngx.status = 503 
+	            ngx.say("service unavailable")
+  	          ngx.exit(503)
+    	        ngx.exit(ngx.NGX_ERROR);
+				end
+					local ret , err = sock:setkeepalive(0,900000)
+					end
+				
+					local t1 = ngx.thread.spawn(multi)
+			--[[		local t2 = ngx.thread.spawn(multi)
+					local t3 = ngx.thread.spawn(multi)
+					local t4 = ngx.thread.spawn(multi)
+					local t5 = ngx.thread.spawn(multi)
+					local t6 = ngx.thread.spawn(multi)
+					local t7 = ngx.thread.spawn(multi)
+					local t8 = ngx.thread.spawn(multi)
+					local t9 = ngx.thread.spawn(multi)
+					local t10 = ngx.thread.spawn(multi) ]]
+				
+					--[[local t11 = ngx.thread.spawn(multi)
+          local t12 = ngx.thread.spawn(multi)
+          local t13 = ngx.thread.spawn(multi)
+          local t14 = ngx.thread.spawn(multi)
+          local t15 = ngx.thread.spawn(multi)
+          local t16 = ngx.thread.spawn(multi)
+          local t17 = ngx.thread.spawn(multi)
+          local t18 = ngx.thread.spawn(multi)
+          local t19 = ngx.thread.spawn(multi)
+          local t20 = ngx.thread.spawn(multi) ]]
+				
+	
+					ngx.thread.wait(t1 --[[, t2, t3 , t4 , t5 , t6 , t7 , t8 , t9 , t10]]  --[[t11 , t12 , t13 , t14 , t15 , t16 , t17 , t18 , t19 , t20 ]])
+					ngx.say("done")
+					ngx.log(ngx.CRIT,"done done done")
+	';
+
+	}
+	
+	
+	location /ttwo {
+
+		content_by_lua '
+		dofile("ashish.lua");
+		';
+
+	}
+	
+
+	location /sample3{
+    content_by_lua '
+        function httper ()
+            local httpc = require("resty.http"):new()
+            httpc:set_timeout(1000)
+           local ok, err = httpc:connect("172.16.4.42",8484)
+           if not ok then
+           ngx.log(ngx.CRIT,"receive failed")
+              ngx.status = 503
+              ngx.say("service unavailable")
+              ngx.exit(503)
+              ngx.exit(ngx.NGX_ERROR);
+            end
+            httpc:set_timeout(1000)
+              local res, err = httpc:request({ path = "/dsp" })
+            if not res then
+               ngx.log(ngx.CRIT,"receive failed")
+              ngx.status = 503
+              ngx.say("service unavailable")
+              ngx.exit(503)
+              ngx.exit(ngx.NGX_ERROR);
+            end
+            local ok, err =httpc:set_keepalive(0, 100000)
+        end
+
+				local threads {
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper),
+				 ngx.thread.spawn(httper)
+				}
+
+
+				for i = 1, #threads do
+        	local ok, res = ngx.thread.wait(threads[i])
+        	if not ok then
+            ngx.say(i, ": failed to run: ", res)
+        	else
+            ngx.say(i, ": status: ", res.status)
+            ngx.say(i, ": body: ", res.body)
+        	end
+    		end
+		
+				
+
+';
+
+}
+
+
+
+	
+	location /sample2 {
+		content_by_lua '
+				function httper ()
+						local httpc = require("resty.http"):new()
+           	httpc:set_timeout(1000)
+           local ok, err = httpc:connect("172.16.4.42",8484)
+           if not ok then
+           ngx.log(ngx.CRIT,"receive failed")
+              ngx.status = 503
+              ngx.say("service unavailable")
+              ngx.exit(503)
+              ngx.exit(ngx.NGX_ERROR);
+						end
+						httpc:set_timeout(1000)
+							local res, err = httpc:request({ path = "/dsp" })
+         		if not res then
+               ngx.log(ngx.CRIT,"receive failed")
+              ngx.status = 503
+              ngx.say("service unavailable")
+              ngx.exit(503)
+              ngx.exit(ngx.NGX_ERROR);
+        		end
+						local ok, err =httpc:set_keepalive(0, 100000)
+				end
+
+				function httper2 ()
+            local http = require "resty.http"
+            local httpc = http.new()
+           httpc:set_timeout(1000)
+           local ok, err = httpc:connect("172.16.4.13",9090)
+           if not ok then
+                 return
+           end
+            local res, err = httpc:request({ path = "/" })
+            if not res then
+                return
+            end
+            httpc:set_keepalive(0, 100000)
+        end
+
+
+
+local t1 = ngx.thread.spawn(httper)
+local t2 = ngx.thread.spawn(httper)
+local t3 = ngx.thread.spawn(httper)
+local t4 = ngx.thread.spawn(httper)
+local t5 = ngx.thread.spawn(httper)
+local t6 = ngx.thread.spawn(httper)
+local t7 = ngx.thread.spawn(httper)
+local t8 = ngx.thread.spawn(httper)
+local t9 = ngx.thread.spawn(httper)
+local t10 = ngx.thread.spawn(httper)
+
+ngx.thread.wait(t1, t2, t3 , t4 , t5 , t6 , t7 , t8 , t9 , t10)
+ngx.say("done")
+
+
+
+		';
+
+	}
+
+
+
+	location /sample {
+						content_by_lua '
+		 	--ngx.status = 503 
+			--ngx.say("service unavailable") 
+			--ngx.exit(503)	
+			--ngx.exit(ngx.NGX_ERROR);
+			res1, res2 , res3 , res4 , res5 , res6 , res7 , res8 , res9 , res10 ,res11 , res12 , res13 , res14 ,res15, res16 , res17 , res18 , res19 , res20  = ngx.location.capture_multi{
+  								  { "/one" },
+  									{ "/two" },
+										{ "/three" },
+										{ "/four" },
+										{ "/five" },
+										{ "/six" },
+										{ "/seven" },
+                    { "/eight" },
+                    { "/nine" },
+                    { "/ten" },
+										{ "/eleven" },
+                    { "/twelve" },
+                    { "/thirteen" },
+                    { "/fourteen" },
+                    { "/fifteen" },
+                    { "/sixteen" },
+                    { "/seventeen" },
+                    { "/eighteen" },
+                    { "/nineteen" },
+                    { "/twenty" }, 
+
+
+			}
+			ngx.say("all done");
+		--[[	
+			--if res1.status == res2.status == res3.status == res4.status == res5.status == res6.status == res7.status == res8.status == res9.status == res10.status == res11.status == res12.status == res13.status == res14.status == res15.status == res17.status == res18.status == res19.status == res20.status == "200" then
+				if res1.status ==  200 and res2.status == 200  and res2.status == 200  and res3.status == 200  and res4.status == 200  and res5.status == 200  and res6.status == 200  and res7.status == 200  and res8.status == 200  and res9.status == 200  and res10.status == 200  and res11.status == 200  and res12.status == 200  and res13.status == 200  and res14.status == 200  and res15.status == 200  and res16.status == 200  and res17.status == 200  and res18.status == 200  and res19.status == 200  and res20.status == 200 then
+				ngx.say("all ok");
+				else
+						ngx.status = 503
+						ngx.say("service unavailable")
+						ngx.exit(503)
+						ngx.exit(ngx.NGX_ERROR);
+
+				end
+--]]
+	--[[ 
+			ngx.say("20 " ..res20.status);
+      ngx.say("19 " ..res19.status);
+      ngx.say("18 " ..res18.status);
+      ngx.say("17 " ..res17.status);
+      ngx.say("16 " ..res16.status);
+      ngx.say("15 " ..res15.status);
+      ngx.say("14 " .. res14.status);
+      ngx.say("13 " .. res13.status);
+      ngx.say("12 " .. res12.status);
+      ngx.say("11 " ..res11.status);
+      ngx.say("10 " .. res10.status);
+      ngx.say("9 " .. res9.status);
+      ngx.say("8 " ..res8.status);
+      ngx.say("7 " .. res7.status);
+			ngx.say("6 " .. res6.status);
+			ngx.say("5 " .. res5.status);
+			ngx.say("4 " .. res4.status);
+			ngx.say("3 " .. res3.status);
+			ngx.say("2 " .. res2.status);
+			ngx.say("1 " ..res1.status); ]] 
+';
+	}
+
+	location /test {
+            content_by_lua '
+		local ffi = require "ffi"
+		ffi.cdef[[
+                long int fact (long int n);
+                int printf(const char *fmt, ...);
+                ]]
+		local func = ffi.load("/home/http/async/work/test.so")
+		func.fact(4)
+
+		local mysql = require "resty.mysql"
+                local db, err = mysql:new()
+                if not db then
+                    ngx.say("failed to instantiate mysql: ", err)
+                    return
+                end
+
+                db:set_timeout(1000)
+                local ok, err, errno, sqlstate = db:connect{
+                    host = "127.0.0.1",
+                    port = 3306,
+                    database = "KomliAdServer",
+                    user = "kdbuser",
+                    password = "KdBuSeR12!",
+                    max_packet_size = 1024 * 1024 }
+
+                if not ok then
+                    ngx.say(" first failed to connect: ", err, ": ", errno, " ", sqlstate)
+                    return
+                end
+
+                ngx.say("connected to mysql.")
+
+                --local res, err, errno, sqlstate =
+                --    db:query("drop table if exists cats")
+                --if not res then
+                --    ngx.say("bad result: ", err, ": ", errno, ": ", sqlstate, ".")
+                --    return
+                --end
+
+                --res, err, errno, sqlstate =
+                --    db:query("create table cats "
+                --             .. "(id serial primary key, "
+                --             .. "name varchar(5))")
+                --if not res then
+                --    ngx.say("bad result: ", err, ": ", errno, ": ", sqlstate, ".")
+                --    return
+                --end
+
+                --ngx.say("table cats created.")
+
+                --res, err, errno, sqlstate =
+                --    db:query("insert into cats (name) "
+                --             .. "values (\'Bob\'),(\'\'),(null)")
+                --if not res then
+                --    ngx.say("bad result: ", err, ": ", errno, ": ", sqlstate, ".")
+                --    return
+                --end
+
+                --ngx.say(res.affected_rows, " rows inserted into table cats ",
+                --        "(last insert id: ", res.insert_id, ")")
+                res, err, errno, sqlstate =
+                    db:query("select * from publisher where id=1", 10)
+                if not res then
+                    ngx.say("bad result: ", err, ": ", errno, ": ", sqlstate, ".")
+                    return
+                end
+
+                local cjson = require "cjson"
+                ngx.say("result: ", cjson.encode(res))
+                local ok, err = db:set_keepalive(10000, 100)
+                if not ok then
+                    ngx.say("failed to set keepalive: ", err)
+                    return
+                end
+
+           ';
+
+}
+
+	location /hello {
+
+	content_by_lua '
+	ngx.sleep(1)
+	ngx.say("hello man hello man");
+
+';
+
+
+
+
+}
+
+
+
+	location /testm {
+
+		 content_by_lua ' 
+
+		
+                local memcached = require "resty.memcached"
+                local memc, err = memcached:new()
+                if not memc then
+                    ngx.say("failed to instantiate memc: ", err)
+                    return
+                end
+
+                memc:set_timeout(1000) -- 1 sec
+
+                -- or connect to a unix domain socket file listened
+                -- by a memcached server:
+                local ok, err = memc:connect("unix:/home/http/memcached.socket")
+
+                --local ok, err = memc:connect("127.0.0.1", 11211)
+                if not ok then
+                    ngx.say("failed to connect: ", err)
+                    return
+                end
+
+                --local ok, err = memc:flush_all()
+                --if not ok then
+                --    ngx.say("failed to flush all: ", err)
+                --    return
+                --end
+
+
+		 local ok, err = memc:set("dog", 32)
+		if not ok then
+			ngx.say("failed to set dog: ", err)
+			return
+		end
+
+		local ok, err = memc:set("cat", "pubmatic pune")
+		if not ok then
+			ngx.say("failed to set dog: ", err)
+			return
+		end
+
+		
+			local results, err = memc:get({"dog", "blah", "cat"})
+			if err then
+				ngx.say("failed to get keys: ", err)
+				return
+			end
+
+		if not results then
+			ngx.say("results empty")
+		return
+		end
+
+		ngx.say("dog: ", results.dog  and table.concat(results.dog, " ")  or "not found")
+		ngx.say("cat: ", results.cat and table.concat(results.cat, " ") or "not found")
+		ngx.say("blah: ", results.blah and table.concat(results.blah, " ") or "not found")
+		
+
+                -- put it into the connection pool of size 100,
+                -- with 10 seconds max idle timeout
+                local ok, err = memc:set_keepalive(10000, 100)
+                if not ok then
+                    ngx.say("cannot set keepalive: ", err)
+                    return
+                end
+
+                -- or just close the connection right away:
+                -- local ok, err = memc:close()
+                -- if not ok then
+                --     ngx.say("failed to close: ", err)
+                --     return
+                -- end
+
+            ';
+
+
+        }
+
+
+	location /testr {
+            content_by_lua '
+                local redis = require "resty.redis"
+                local red = redis:new()
+
+                red:set_timeout(1000) -- 1 sec
+
+                -- or connect to a unix domain socket file listened
+                -- by a redis server:
+                --     local ok, err = red:connect("unix:/path/to/redis.sock")
+
+                local ok, err = red:connect("127.0.0.1", 6379)
+                if not ok then
+                    ngx.say("failed to connect: ", err)
+                    return
+                end
+
+                ok, err = red:set("dog", "an animal")
+                if not ok then
+                    ngx.say("failed to set dog: ", err)
+                    return
+                end
+
+                ngx.say("set result: ", ok)
+
+                local res, err = red:get("dog")
+                if not res then
+                    ngx.say("failed to get dog: ", err)
+                    return
+                end
+
+                if res == ngx.null then
+                    ngx.say("dog not found.")
+                    return
+                end
+
+                ngx.say("we have got dog: ", res)
+
+                red:init_pipeline()
+                red:set("cat", "Marry")
+                red:set("horse", "Bob")
+                red:get("cat")
+                red:get("horse")
+                local results, err = red:commit_pipeline()
+                if not results then
+                    ngx.say("failed to commit the pipelined requests: ", err)
+                    return
+                end
+
+                for i, res in ipairs(results) do
+                    if type(res) == "table" then
+                        if not res[1] then
+                            ngx.say("failed to run command ", i, ": ", res[2])
+                        else
+                            -- process the table value
+                        end
+                    else
+                        -- process the scalar value
+                    end
+                end
+
+                -- put it into the connection pool of size 100,
+                -- with 10 seconds max idle time
+                local ok, err = red:set_keepalive(10000, 100)
+                if not ok then
+                    ngx.say("failed to set keepalive: ", err)
+                    return
+                end
+
+                -- or just close the connection right away:
+                -- local ok, err = red:close()
+                -- if not ok then
+                --     ngx.say("failed to close: ", err)
+                --     return
+                -- end
+            ';
+        }
+
+location /maxmind {
+				set $my_var $geoip_region;
+					if ($geoip_region = "NY" ) {
+						echo "<html> <img src=\"http://www.libertyharborrv.com/uploads/statue.jpeg\" alt=\"Smiley face\"> <h1>hello NY american</h1><h2> lat $geoip_latitude long $geoip_longitude city  $geoip_city  region $geoip_region </h2> </html>"; 
+				}
+					if ($geoip_country_code != "US" ) {
+						echo "<html> <img src=\"http://www.4allproject.com/wp-content/uploads/2013/06/world.png\" alt=\"Smiley face\"> <h1>hello world</h1> <h2> lat $geoip_latitude long $geoip_longitude city  $geoip_city region $geoip_region </h2></html>";
+    }
+
+
+								content_by_lua '
+                local res = ngx.location.capture("/sample2")
+                if res.status == 200 then
+                    ngx.say(res.body)
+								else 
+										ngx.say(everything failed);
+                end
+								echo $my_var;
+								';
+
+
+
+
+}
+
+	
+	
+	
+	location /max2 {
+		content_by_lua '
+		function httper ()
+            local httpc = require("resty.http"):new()
+            httpc:set_timeout(1000)
+           local ok, err = httpc:connect("172.16.4.42",8484)
+           if not ok then
+           ngx.log(ngx.CRIT,"receive failed")
+              ngx.status = 503
+              ngx.say("service unavailable")
+              ngx.exit(503)
+              ngx.exit(ngx.NGX_ERROR);
+            end
+            httpc:set_timeout(1000)
+              local res, err = httpc:request({ path = "/dsp" })
+            if not res then
+               ngx.log(ngx.CRIT,"receive failed")
+              ngx.status = 503
+              ngx.say("service unavailable")
+              ngx.exit(503)
+              ngx.exit(ngx.NGX_ERROR);
+            end
+            local ok, err =httpc:set_keepalive(0, 100000)
+        		ngx.log(ngx.CRIT,res.body)
+				end
+
+
+local t1 = ngx.thread.spawn(httper)
+local t2 = ngx.thread.spawn(httper)
+local t3 = ngx.thread.spawn(httper)
+local t4 = ngx.thread.spawn(httper)
+local t5 = ngx.thread.spawn(httper)
+local t6 = ngx.thread.spawn(httper)
+local t7 = ngx.thread.spawn(httper)
+local t8 = ngx.thread.spawn(httper)
+local t9 = ngx.thread.spawn(httper)
+local t10 = ngx.thread.spawn(httper)
+
+ngx.thread.wait(t1, t2, t3 , t4 , t5 , t6 , t7 , t8 , t9 , t10)
+ngx.say("done")
+			
+			if ngx.var["geoip_region"] == "NY" then
+				ngx.say("<html> <img src=\\"http://www.libertyharborrv.com/uploads/statue.jpeg\\" alt=\\"Smiley face\\"> <h1>hello NY american</h1><h2> lat ".. ngx.var["geoip_latitude"] .." long ".. ngx.var[\"geoip_longitude\"] .." city " ..    ngx.var["geoip_city"] .." region ".. ngx.var["geoip_region"] .. " </h2> </html>")
+			else
+				ngx.say("<html> <img src=\\"http://www.4allproject.com/wp-content/uploads/2013/06/world.png\\" alt=\\"Smiley face\\"> <h1>hello world</h1> <h2> lat "..  ngx.var["geoip_latitude"].." long ".. ngx.var["geoip_longitude"] .." city "..  ngx.var["geoip_city"] .." region "..  ngx.var["geoip_region"].." </h2></html>");
+			end
+			ngx.say(ngx.var["geoip_country_code"]);
+		';
+	}
+
+
+location /m {
+	set_by_lua_file $res /home/ashish/work/a.lua ;
+	echo $res;
+}
+
+}
+
+}
+
+
